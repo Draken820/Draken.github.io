@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XV Silvia - Valiente</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Great+Vibes&family=Montserrat:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --emerald: #043927;
+            --emerald-light: #065139;
+            --gold: #c5a059;
+            --copper: #d35400;
+            --cream: #f4f4f4;
+            --whatsapp: #25d366;
+            --wisp: #4db8ff;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body, html {
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            overflow: hidden; background-color: var(--emerald);
+            font-family: 'Montserrat', sans-serif; color: var(--cream);
+        }
+
+        /* --- PANTALLA DE INICIO (PORTADA) --- */
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, var(--emerald-light) 0%, var(--emerald) 100%);
+            z-index: 9999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        .start-btn {
+            background: var(--gold); color: var(--emerald); font-family: 'Cinzel', serif;
+            padding: 15px 40px; border-radius: 30px; font-size: 1.2rem; font-weight: bold;
+            margin-top: 30px; box-shadow: 0 0 20px rgba(197, 160, 89, 0.5);
+            animation: pulseBtn 2s infinite; cursor: pointer;
+        }
+        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        .story-container { position: relative; width: 100%; height: 100%; }
+
+        .section {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            padding: 40px 20px; opacity: 0; pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
+            background-image: radial-gradient(circle, var(--emerald-light) 0%, var(--emerald) 100%);
+            text-align: center; z-index: 1;
+        }
+
+        .section.active { opacity: 1; pointer-events: auto; z-index: 10; }
+
+        /* Contenedor principal que agrupa el texto para evitar encimados */
+        .content-wrapper { 
+            z-index: 5; position: relative; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; height: 100%; width: 100%;
+        }
+
+        /* --- DECORACIONES TEMÁTICAS MULTIPLICADAS --- */
+        .decor {
+            position: absolute; color: var(--gold);
+            opacity: 0.18; /* Más visibles */
+            z-index: 0; filter: blur(1px);
+        }
+        
+        /* Sección 1: Coronas y Osos */
+        .d1 { top: 15%; left: 10%; font-size: 7rem; transform: rotate(-20deg); }
+        .d2 { bottom: 15%; right: 10%; font-size: 9rem; transform: rotate(15deg); }
+        /* Sección 2: Pasteles y Huellas */
+        .d3 { top: 10%; right: 15%; font-size: 6rem; transform: rotate(25deg); }
+        .d4 { bottom: 20%; left: 5%; font-size: 8rem; transform: rotate(-15deg); }
+        /* Sección 3: Caballos y Dianas (Tiro con arco) */
+        .d5 { top: 25%; left: 5%; font-size: 7rem; transform: rotate(-10deg); }
+        .d6 { bottom: 10%; right: 20%; font-size: 8rem; transform: rotate(10deg); }
+        /* Sección 4 y 5: Ajedrez y más magia */
+        .d7 { top: 15%; right: 5%; font-size: 6rem; transform: rotate(30deg); }
+        .d8 { bottom: 15%; left: 15%; font-size: 9rem; transform: rotate(-20deg); }
+
+        /* Fuegos Fatuos */
+        .wisp {
+            position: absolute; width: 15px; height: 15px; background: var(--wisp);
+            border-radius: 50%; box-shadow: 0 0 20px 10px rgba(77, 184, 255, 0.4);
+            animation: floatWisp 4s infinite ease-in-out alternate; opacity: 0.6; z-index: 2;
+        }
+        .wisp:nth-child(1) { top: 25%; left: 15%; animation-delay: 0s; }
+        .wisp:nth-child(2) { top: 65%; right: 10%; animation-delay: 1.5s; width: 10px; height: 10px; }
+
+        @keyframes floatWisp { 0% { transform: translateY(0) scale(1); opacity: 0.4; } 100% { transform: translateY(-30px) scale(1.2); opacity: 0.8; } }
+
+        /* --- ANIMACIONES --- */
+        .active .fade-up { animation: fadeUp 1s forwards; opacity: 0; }
+        .active .scale-in { animation: scaleIn 0.8s forwards; opacity: 0; }
+        .active .decor-anim { animation: decorFade 1.5s forwards; opacity: 0; }
+        
+        .delay-1 { animation-delay: 0.3s !important; }
+        .delay-2 { animation-delay: 0.6s !important; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes decorFade { from { opacity: 0; transform: scale(0.5); } to { opacity: 0.18; transform: scale(1); } }
+
+        /* --- ELEMENTOS VISUALES --- */
+        .photo-frame {
+            width: 170px; height: 170px; border: 3px solid var(--gold); border-radius: 50%;
+            overflow: hidden; margin: 15px 0; box-shadow: 0 0 20px rgba(197, 160, 89, 0.4); position: relative; z-index: 5;
+        }
+        .photo-frame img { width: 100%; height: 100%; object-fit: cover; }
+
+        .parents-grid { display: flex; gap: 15px; margin-top: 10px; }
+        .small-frame { width: 90px; height: 90px; border-radius: 10px; }
+
+        h1 { font-family: 'Great Vibes', cursive; font-size: 3.5em; color: var(--gold); margin: 0; text-shadow: 2px 2px 5px rgba(0,0,0,0.5); }
+        h2 { font-family: 'Cinzel', serif; color: var(--gold); letter-spacing: 2px; font-size: 1.5em; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        
+        .calendar { width: 100%; max-width: 280px; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 10px; margin: 10px 0; border: 1px solid rgba(197, 160, 89, 0.3); z-index: 5;}
+        .days { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; }
+        .day { padding: 5px; font-size: 11px; }
+        .today { background: var(--copper); border-radius: 50%; color: white; font-weight: bold; box-shadow: 0 0 15px var(--copper); }
+
+        .btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 250px; z-index: 10; position: relative;}
+        .btn { padding: 12px; border-radius: 30px; text-decoration: none; font-weight: bold; font-family: 'Cinzel', serif; font-size: 0.9em; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .btn-gold { background: var(--gold); color: var(--emerald); }
+        .btn-wsp { background: var(--whatsapp); color: white; }
+
+        /* CORRECCIÓN DEL TEXTO ENCIMADO */
+        .tap-indicator { margin-top: 50px; font-size: 0.8em; color: var(--gold); animation: blink 2s infinite; text-transform: uppercase; letter-spacing: 1px; font-weight: bold; }
+        @keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        #audioControl {
+            position: fixed; top: 20px; right: 20px; z-index: 100;
+            background: rgba(197, 160, 89, 0.2); border: 1px solid var(--gold); color: var(--gold);
+            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="Valiente - Con toda libertad (Letra Español latino).mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="audioControl" onclick="toggleAudio(event)">
+        <i class="fas fa-music" id="audioIcon"></i>
+    </div>
+
+    <div id="start-screen" onclick="startInvitation()">
+        <h1 style="font-size: 4em; padding: 0 20px;">Silvia</h1>
+        <h2 style="font-size: 1em; margin-bottom: 20px;">Mis XV Años</h2>
+        <div class="start-btn">Abrir Invitación</div>
+    </div>
+
+    <div class="story-container" onclick="nextStep(event)">
+        
+        <div class="section active" id="sec-1">
+            <i class="fas fa-crown decor d1 decor-anim"></i>
+            <i class="fas fa-paw decor d2 decor-anim delay-1"></i>
+            <div class="wisp"></div> <div class="wisp"></div>
+            
+            <div class="content-wrapper">
+                <h2 class="fade-up">Nuestra aventura comienza</h2>
+                <p class="fade-up delay-1" style="font-style: italic; max-width: 80%; line-height: 1.6; margin-top: 20px;">"Cambia tu destino, mira hacia adentro..."</p>
+                <div class="tap-indicator fade-up delay-2">Toca la pantalla para avanzar</div>
+            </div>
+        </div>
+
+        <div class="section" id="sec-2">
+            <i class="fas fa-cookie-bite decor d3 decor-anim"></i>
+            <i class="fas fa-bullseye decor d4 decor-anim delay-1"></i>
+            
+            <div class="content-wrapper">
+                <h2 class="scale-in">Con amor de mis padres</h2>
+                
+                <div class="photo-frame scale-in delay-1" style="width: 200px; height: 200px;">
+                    <img src="WhatsApp Image 2026-04-14 at 11.26.19 AM.jpeg" alt="Mis Padres">
+                </div>
+                
+                <p class="fade-up delay-2" style="font-weight: bold; font-size: 1.1em; margin-top: 10px;">Sr. Hugo P.A. <br> Sra. Maricela R.M.</p>
+            </div>
+        </div>
+
+        <div class="section" id="sec-3">
+            <i class="fas fa-horse-head decor d5 decor-anim"></i>
+            <i class="fas fa-crown decor d6 decor-anim delay-1"></i>
+            <div class="wisp" style="top: 20%; right: 20%;"></div>
+            
+            <div class="content-wrapper">
+                <p class="fade-up">Tienen el honor de invitarte a los XV años de</p>
+                <h1 class="scale-in delay-1">Silvia</h1>
+                <h1 class="scale-in delay-1" style="font-size: 2.5em; margin-top: -10px;">Tlazochtiani</h1>
+                <div class="photo-frame scale-in delay-2" style="width: 200px; height: 200px;">
+                    <img src="s.jpeg" alt="Silvia">
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="sec-4">
+            <i class="fas fa-chess-knight decor d7 decor-anim"></i>
+            <i class="fas fa-paw decor d8 decor-anim delay-1"></i>
+            
+            <div class="content-wrapper">
+                <h2 class="fade-up">Reserva la fecha</h2>
+                <div class="calendar scale-in delay-1">
+                    <div style="text-align: center; padding: 5px; color: var(--gold); font-weight: bold;" id="monthYear"></div>
+                    <div class="days" id="calendarDays">
+                        <div class="day"><b>L</b></div><div class="day"><b>M</b></div><div class="day"><b>M</b></div>
+                        <div class="day"><b>J</b></div><div class="day"><b>V</b></div><div class="day"><b>S</b></div>
+                        <div class="day"><b>D</b></div>
+                    </div>
+                </div>
+                <p class="fade-up delay-2" style="font-size: 1.2em; font-weight: bold;">Sábado 25 de Julio</p>
+                <p class="fade-up delay-2" style="font-size: 1.2em; font-weight: bold;">Misa 1:00 PM</p>
+            </div>
+        </div>
+
+        <div class="section" id="sec-5">
+            <i class="fas fa-cookie-bite decor d3 decor-anim"></i>
+            <i class="fas fa-chess-rook decor d6 decor-anim delay-1"></i>
+            <div class="wisp"></div>
+            
+            <div class="content-wrapper">
+                <h2 class="scale-in">¡Te esperamos!</h2>
+                
+
+                <div class="btn-group" style="margin-top: 20px;">
+                    <a href="https://maps.app.goo.gl/kP79LJmHHXBkr33t7?g_st=aw" target="_blank" class="btn btn-gold fade-up delay-1">
+                        <i class="fas fa-map-marker-alt"></i> Ver Ubicación Salon
+                    </a>
+                    <a href="https://maps.app.goo.gl/JaWHf1Hz2H3qRipL6" target="_blank" class="btn btn-gold fade-up delay-1">
+                        <i class="fas fa-map-marker-alt"></i> Ver Ubicación Iglesia 
+                    </a>
+                    
+                    <a href="https://wa.me/5523605505?text=¡Hola!+Confirmo+mi+asistencia+a+los+XV+de+Silvia.+¡Ahí+estaremos!" 
+                       target="_blank" class="btn btn-wsp fade-up delay-2">
+                        <i class="fab fa-whatsapp"></i> Confirmar Asistencia
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSection = 1;
+        const totalSections = 5;
+        const music = document.getElementById('bgMusic');
+        const audioIcon = document.getElementById('audioIcon');
+
+        // Función que abre la invitación y arranca la música sin fallos
+        function startInvitation() {
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.opacity = '0';
+            startScreen.style.visibility = 'hidden';
+            
+            music.play().then(() => {
+                audioIcon.classList.remove('fa-volume-mute');
+                audioIcon.classList.add('fa-music');
+            }).catch(e => console.log("Audio bloqueado, usa el botón manual."));
+        }
+
+        function toggleAudio(event) {
+            event.stopPropagation(); 
+            if (music.paused) {
+                music.play();
+                audioIcon.classList.remove('fa-volume-mute');
+                audioIcon.classList.add('fa-music');
+            } else {
+                music.pause();
+                audioIcon.classList.remove('fa-music');
+                audioIcon.classList.add('fa-volume-mute');
+            }
+        }
+
+        function nextStep(event) {
+            if (event.target.closest('a') || event.target.closest('#audioControl')) return;
+
+            if (currentSection < totalSections) {
+                document.getElementById(`sec-${currentSection}`).classList.remove('active');
+                currentSection++;
+                document.getElementById(`sec-${currentSection}`).classList.add('active');
+            } else {
+                document.getElementById(`sec-${currentSection}`).classList.remove('active');
+                currentSection = 1;
+                document.getElementById(`sec-${currentSection}`).classList.add('active');
+            }
+        }
+
+        function createCalendar() {
+            const daysContainer = document.getElementById('calendarDays');
+            const startOffset = 2; 
+            const daysInMonth = 31;
+
+            for (let i = 0; i < startOffset; i++) {
+                daysContainer.innerHTML += '<div class="day"></div>';
+            }
+            for (let i = 1; i <= daysInMonth; i++) {
+                let className = 'day';
+                if (i === 25) className += ' today'; 
+                daysContainer.innerHTML += `<div class="${className}">${i}</div>`;
+            }
+            document.getElementById('monthYear').innerText = "JULIO 2026";
+        }
+        createCalendar();
+    </script>
+</body>
+</html>
